@@ -1,0 +1,41 @@
+# extract_student_info:
+#   description: >
+#     Analyze the student query to extract key information such as major, current academic
+#     progress (semester or year), and any specific interests or requirements mentioned.
+#   expected_output: >
+#     A structured JSON object containing the student's major, current semester, and any
+#     specific interests or requirements they mentioned.
+#   agent: course_advisor
+
+recommend_courses:
+  description: >
+
+    <GOAL>
+      Based on the extracted student information, recommend appropriate courses that
+        1. Meet the prerequisites the student likely has completed
+        2. Are required or recommended for their major at their current progress level
+        3. Match any specific interests or requirements they mentioned
+    </GOAL>
+
+    <STEPS>
+      <Step_1> Process the JSON output from the extract_student_info task. </Step_1>
+      <Step_2> Use the degree_program_url_tool to find the URL for the suggested plan of study for the student's major. </Step_2>
+      <Step_3> Determine the courses that are most relevant to the student's major and current academic progress. Use the course_catalog_tool to extract the full content of the University of Miami Bulletin. ONLY FIND COURSES THAT ARE SPECIFICALLY LISTED FOR THEIR MAJOR {major}</Step_3>
+      <Step_4> Make sure to only return courses that are specifically listed for their major. Refer to the Suggested Plan of Study for their major to ensure you are only returning courses that are part of the suggested plan of study. Return the courses listed in the suggested plan of study based on their current semester {semester}.</Step_4>
+      <IMPORTANT> Only return courses that are specifically listed for their major. Do not make up courses or return courses that are not specifically listed for their major. If one of the courses is a prequisite for other course(s), ONLY RETURN THE COURSE THAT IS THE PREREQUSITE, NOT THE COURSE THAT REQUIRES IT.</IMPORTANT>
+      <IMPORTANT> In the case that you do include courses that require another listed course as a prerequisite, replace those courses with other courses, like electives that fulfill some requirement.</IMPORTANT>
+    </STEPS>
+
+  expected_output: >
+    A JSON list of recommended courses, each with code, name, description, credits, and prerequisites.
+  agent: catalog_specialist
+
+format_recommendations:
+  description: >
+    Take the raw course recommendations and format them into a clear, readable response
+    that explains why each course is recommended and how it fits into the student's
+    academic journey.
+  expected_output: >
+    A formatted response explaining the recommended courses, their relevance to the student's
+    academic path, and any important information about prerequisites or course sequencing.
+  agent: catalog_specialist
