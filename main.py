@@ -1,5 +1,6 @@
 from typing import Union, Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import warnings
 from pydantic import BaseModel
@@ -12,6 +13,15 @@ from src.ai_advisor.main import format_result, fillInCourses
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 
 class CourseRequest(BaseModel):
